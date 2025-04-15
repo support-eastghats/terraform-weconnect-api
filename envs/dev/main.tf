@@ -139,3 +139,13 @@ output "api_url" {
   value       = module.api_gateway.api_url
   description = "API Gateway base URL"
 }
+
+
+module "scheduling_data_bucket" {
+  source      = "../../modules/s3-backend"
+  bucket_name = "weconnect-scheduling-data-test"
+  tags = {
+    Project     = "Weconnect-Scheduler"
+    Environment = "dev"
+  }
+}
