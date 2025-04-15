@@ -1,7 +1,6 @@
 
 provider "aws" {
   region  = "ap-south-1"
-  profile = "uat"
 }
 
 module "iam" {
