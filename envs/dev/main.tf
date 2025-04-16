@@ -153,7 +153,7 @@ module "scheduling_data_bucket" {
 
 module "Scheduler_frontend_bucket" {
   source      = "../../modules/s3-backend"
-  bucket_name = "www.dev.Weconnect-Scheduler.eastghats.com"
+  bucket_name = "www.dev.weconnect-scheduler.eastghats.com"
   tags = {
     Project     = "Weconnect-Scheduler"
     Environment = "dev"
