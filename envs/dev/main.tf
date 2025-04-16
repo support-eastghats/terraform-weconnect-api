@@ -1,6 +1,5 @@
-
 provider "aws" {
-  region  = "ap-south-1"
+  region = "ap-south-1"
 }
 
 module "iam" {
@@ -115,7 +114,6 @@ module "lambda_verify_mfa" {
 module "api_gateway" {
   source = "../../modules/multi-lambda-api-gateway"
   name   = "weconnect-api-dev"
-
   routes = {
     "/setup-mfa"        = { method = "POST", lambda_uri = module.lambda_setup_mfa.lambda_uri },
     "/user/list"        = { method = "POST", lambda_uri = module.lambda_list_users.lambda_uri },
@@ -135,12 +133,6 @@ module "api_gateway" {
   }
 }
 
-output "api_url" {
-  value       = module.api_gateway.api_url
-  description = "API Gateway base URL"
-}
-
-
 module "scheduling_data_bucket" {
   source      = "../../modules/s3-backend"
   bucket_name = "weconnect-scheduling-data-test"
@@ -150,7 +142,6 @@ module "scheduling_data_bucket" {
   }
 }
 
-
 module "Scheduler_frontend_bucket" {
   source      = "../../modules/s3-backend"
   bucket_name = "www.dev.weconnect-scheduler.eastghats.com"
@@ -158,4 +149,9 @@ module "Scheduler_frontend_bucket" {
     Project     = "Weconnect-Scheduler"
     Environment = "dev"
   }
+}
+
+output "api_url" {
+  value       = module.api_gateway.api_url
+  description = "API Gateway base URL"
 }

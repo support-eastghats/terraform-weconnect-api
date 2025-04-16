@@ -1,4 +1,3 @@
-
 resource "aws_iam_role" "lambda_exec_role" {
   name = var.role_name
 
@@ -14,6 +13,11 @@ resource "aws_iam_role" "lambda_exec_role" {
   })
 
   tags = var.tags
+
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes  = [name]
+  }
 }
 
 resource "aws_iam_role_policy" "lambda_policy" {
