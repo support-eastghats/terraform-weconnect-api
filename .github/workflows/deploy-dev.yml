@@ -21,9 +21,10 @@ jobs:
           terraform init \
             -backend-config="bucket=weconnect-terraform-state-dev" \
             -backend-config="key=dev/terraform.tfstate" \
-            -backend-config="region=ap-south-1" \
-            -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID_DEV }}" \
-            -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}"
+            -backend-config="region=ap-south-1"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
 
       - name: Terraform Apply
         working-directory: ./envs/dev
