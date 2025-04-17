@@ -1,4 +1,10 @@
+data "aws_s3_bucket" "existing" {
+  bucket = var.bucket_name
+  count  = var.force_create ? 0 : 1
+}
+
 resource "aws_s3_bucket" "this" {
+  count  = var.force_create ? 1 : 0
   bucket = var.bucket_name
   tags   = var.tags
 
@@ -9,7 +15,8 @@ resource "aws_s3_bucket" "this" {
 }
 
 resource "aws_s3_bucket_versioning" "this" {
-  bucket = aws_s3_bucket.this.id
+  count  = var.force_create ? 1 : 0
+  bucket = aws_s3_bucket.this[0].id
 
   versioning_configuration {
     status = "Enabled"

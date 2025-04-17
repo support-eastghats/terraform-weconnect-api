@@ -3,8 +3,9 @@ provider "aws" {
 }
 
 module "iam" {
-  source    = "../../modules/iam"
-  role_name = "weconnect-lambda-role-dev"
+  source        = "../../modules/iam"
+  role_name     = "weconnect-lambda-role-dev"
+  force_create  = false  # <-- Do not recreate if already in AWS
   tags = {
     Project     = "Weconnect-Scheduler"
     Environment = "dev"
@@ -134,8 +135,9 @@ module "api_gateway" {
 }
 
 module "scheduling_data_bucket" {
-  source      = "../../modules/s3-backend"
-  bucket_name = "weconnect-scheduling-data-test"
+  source        = "../../modules/s3-backend"
+  bucket_name   = "weconnect-scheduling-data-test"
+  force_create  = false  # <-- Do not recreate
   tags = {
     Project     = "Weconnect-Scheduler"
     Environment = "dev"
@@ -145,6 +147,7 @@ module "scheduling_data_bucket" {
 module "Scheduler_frontend_bucket" {
   source      = "../../modules/s3-backend"
   bucket_name = "www.dev.weconnect-scheduler.eastghats.com"
+  force_create  = false  # <-- Do not recreate
   tags = {
     Project     = "Weconnect-Scheduler"
     Environment = "dev"

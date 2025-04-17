@@ -4,5 +4,10 @@ variable "bucket_name" {
 
 variable "tags" {
   type = map(string)
-  default = {}
+}
+
+variable "force_create" {
+  description = "Set to true to create the bucket (false = use existing)"
+  type        = bool
+  default     = false
 }
