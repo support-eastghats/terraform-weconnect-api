@@ -1,0 +1,49 @@
+name: Reset and Deploy DEV
+
+on:
+  workflow_dispatch:  # Manual trigger only
+
+jobs:
+  reset-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Empty S3 Buckets (force delete all contents)
+        run: |
+          aws s3 rm s3://weconnect-scheduling-data-test --recursive || true
+          aws s3 rm s3://www.dev.weconnect-scheduler.eastghats.com --recursive || true
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          AWS_REGION: ap-south-1
+
+      - name: Terraform Init
+        working-directory: ./envs/dev
+        run: |
+          terraform init \
+            -backend-config="bucket=weconnect-terraform-state-dev" \
+            -backend-config="key=dev/terraform.tfstate" \
+            -backend-config="region=ap-south-1"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+
+      - name: Terraform Destroy (clean everything)
+        working-directory: ./envs/dev
+        run: terraform destroy -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+
+      - name: Terraform Apply (clean redeploy)
+        working-directory: ./envs/dev
+        run: terraform apply -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
