@@ -5,7 +5,7 @@ provider "aws" {
 module "iam" {
   source        = "../../modules/iam"
   role_name     = "weconnect-lambda-role-dev"
-  force_create  = false  # <-- Do not recreate if already in AWS
+  force_create  = true
   tags = {
     Project     = "Weconnect-Scheduler"
     Environment = "dev"
@@ -18,6 +18,7 @@ module "lambda_setup_mfa" {
   handler          = "index.handler"
   lambda_zip_path  = "../../lambda-code/setup_mfa.zip"
   lambda_role_arn  = module.iam.lambda_exec_role_arn
+  api_gateway_id   = module.api_gateway.api_id
   env_vars         = { STAGE = "dev" }
   tags             = { Project = "Weconnect-Scheduler", Environment = "dev" }
 }
@@ -28,6 +29,7 @@ module "lambda_list_users" {
   handler          = "index.handler"
   lambda_zip_path  = "../../lambda-code/list_users.zip"
   lambda_role_arn  = module.iam.lambda_exec_role_arn
+  api_gateway_id   = module.api_gateway.api_id
   env_vars         = { STAGE = "dev" }
   tags             = { Project = "Weconnect-Scheduler", Environment = "dev" }
 }
@@ -38,6 +40,7 @@ module "lambda_update_user" {
   handler          = "index.handler"
   lambda_zip_path  = "../../lambda-code/update_user.zip"
   lambda_role_arn  = module.iam.lambda_exec_role_arn
+  api_gateway_id   = module.api_gateway.api_id
   env_vars         = { STAGE = "dev" }
   tags             = { Project = "Weconnect-Scheduler", Environment = "dev" }
 }
@@ -48,6 +51,7 @@ module "lambda_delete_user" {
   handler          = "index.handler"
   lambda_zip_path  = "../../lambda-code/delete_user.zip"
   lambda_role_arn  = module.iam.lambda_exec_role_arn
+  api_gateway_id   = module.api_gateway.api_id
   env_vars         = { STAGE = "dev" }
   tags             = { Project = "Weconnect-Scheduler", Environment = "dev" }
 }
@@ -58,6 +62,7 @@ module "lambda_get_user_mfa" {
   handler          = "index.handler"
   lambda_zip_path  = "../../lambda-code/get_user_mfa.zip"
   lambda_role_arn  = module.iam.lambda_exec_role_arn
+  api_gateway_id   = module.api_gateway.api_id
   env_vars         = { STAGE = "dev" }
   tags             = { Project = "Weconnect-Scheduler", Environment = "dev" }
 }
@@ -68,6 +73,7 @@ module "lambda_add_user" {
   handler          = "index.handler"
   lambda_zip_path  = "../../lambda-code/add_user.zip"
   lambda_role_arn  = module.iam.lambda_exec_role_arn
+  api_gateway_id   = module.api_gateway.api_id
   env_vars         = { STAGE = "dev" }
   tags             = { Project = "Weconnect-Scheduler", Environment = "dev" }
 }
@@ -78,6 +84,7 @@ module "lambda_delete_user_mfa" {
   handler          = "index.handler"
   lambda_zip_path  = "../../lambda-code/delete_user_mfa.zip"
   lambda_role_arn  = module.iam.lambda_exec_role_arn
+  api_gateway_id   = module.api_gateway.api_id
   env_vars         = { STAGE = "dev" }
   tags             = { Project = "Weconnect-Scheduler", Environment = "dev" }
 }
@@ -88,6 +95,7 @@ module "lambda_get_user_by_id" {
   handler          = "index.handler"
   lambda_zip_path  = "../../lambda-code/get_user_by_id.zip"
   lambda_role_arn  = module.iam.lambda_exec_role_arn
+  api_gateway_id   = module.api_gateway.api_id
   env_vars         = { STAGE = "dev" }
   tags             = { Project = "Weconnect-Scheduler", Environment = "dev" }
 }
@@ -98,6 +106,7 @@ module "lambda_validate_user" {
   handler          = "index.handler"
   lambda_zip_path  = "../../lambda-code/validate_user.zip"
   lambda_role_arn  = module.iam.lambda_exec_role_arn
+  api_gateway_id   = module.api_gateway.api_id
   env_vars         = { STAGE = "dev" }
   tags             = { Project = "Weconnect-Scheduler", Environment = "dev" }
 }
@@ -108,6 +117,7 @@ module "lambda_verify_mfa" {
   handler          = "index.handler"
   lambda_zip_path  = "../../lambda-code/verify_mfa.zip"
   lambda_role_arn  = module.iam.lambda_exec_role_arn
+  api_gateway_id   = module.api_gateway.api_id
   env_vars         = { STAGE = "dev" }
   tags             = { Project = "Weconnect-Scheduler", Environment = "dev" }
 }
@@ -137,7 +147,7 @@ module "api_gateway" {
 module "scheduling_data_bucket" {
   source        = "../../modules/s3-backend"
   bucket_name   = "weconnect-scheduling-data-test"
-  force_create  = false  # <-- Do not recreate
+  force_create  = true
   tags = {
     Project     = "Weconnect-Scheduler"
     Environment = "dev"
@@ -147,14 +157,9 @@ module "scheduling_data_bucket" {
 module "Scheduler_frontend_bucket" {
   source      = "../../modules/s3-backend"
   bucket_name = "www.dev.weconnect-scheduler.eastghats.com"
-  force_create  = false  # <-- Do not recreate
+  force_create  = true
   tags = {
     Project     = "Weconnect-Scheduler"
     Environment = "dev"
   }
-}
-
-output "api_url" {
-  value       = module.api_gateway.api_url
-  description = "API Gateway base URL"
 }
